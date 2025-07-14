@@ -43,9 +43,9 @@
             '<div style="min-width:240px; max-width:260px;">' +
               '<b>' + unit.unit_type + '</b> for <b>' + unit.price + '</b> EUR <br>' +
               '<img style="display:block; margin:8px auto; max-width:222px; width:222px; height:222px;" src="https://maps.googleapis.com/maps/api/staticmap?markers=size:tiny|' + unit.lat +',' + unit.lon + '&zoom=17&maptype=hybrid&size=222x222&key=AIzaSyDSdUjaimSFk_nlKvfr0puez_LXvj_VKxM"><br>' +
-              '<a target="_blank" href="https://www.google.com/maps/place/' + unit.address.replace(/ /gi, '+') + '">' + unit.address + '</a><br>' +
-              '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a>    ' +
-              '<a target="_blank" href="/proxy?url=https%3A//www.zvg-portal.de/index.php%3Fbutton%3DshowZvg%26zvg_id%3D' + unit.unit_id + '%26land_abk%3D' + unit.state + '">'+ unit.file_ref + '</a>' +
+              '<b>' + unit.address + '</b><br>' +
+              '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a><br>' +
+              '<a target="_blank" href="https://zvg.kclemens.de/proxy?url=https%3A//www.zvg-portal.de/index.php%3Fbutton%3DshowZvg%26zvg_id%3D' + unit.unit_id + '%26land_abk%3D' + unit.state + '">'+ unit.file_ref + '</a>' +
             '</div>'
           );
         });
