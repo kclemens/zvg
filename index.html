@@ -6,24 +6,53 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
     #map {
-      width: 600px;
-      height: 500px;
-      border: 1px solid #888;
+      width: 100vw;
+      height: 100vh;
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
   <script>
-    // Initialize the map and set its view to Berlin
-    var map = L.map('map').setView([52.494, 13.446], 12);
+    var map = L.map('map').setView([52.494, 13.446], 10);
 
-    // Add OpenStreetMap tile layer with attribution
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      minZoom: 8,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      minZoom: 8,
+      attribution: '&copy; <a href="https://www.openrailwaymap.org/">OpenRailwayMap</a> contributors'
+    }).addTo(map);
+
+    fetch('https://kclemens.de/zvg/units.json.lists')
+      .then(response => response.text())
+      .then(text => {
+        const lines = text.trim().split('\n');
+        lines.forEach((line, i) => {
+          const unit = JSON.parse(line);
+          L.marker([unit.lat, unit.lon]).addTo(map).bindPopup(
+            '<div style="min-width:240px; max-width:260px;">' +
+              '<b>' + unit.unit_type + '</b> for <b>' + unit.price + '</b> EUR <br>' +
+              '<img style="display:block; margin:8px auto; max-width:222px; width:222px; height:222px;" src="https://maps.googleapis.com/maps/api/staticmap?markers=size:tiny|' + unit.lat +',' + unit.lon + '&zoom=17&maptype=hybrid&size=222x222&key=AIzaSyDSdUjaimSFk_nlKvfr0puez_LXvj_VKxM"><br>' +
+              '<a target="_blank" href="https://www.google.com/maps/place/' + unit.address.replace(/ /gi, '+') + '">' + unit.address + '</a><br>' +
+              '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a>    ' +
+              '<a target="_blank" href="/proxy?url=https%3A//www.zvg-portal.de/index.php%3Fbutton%3DshowZvg%26zvg_id%3D' + unit.unit_id + '%26land_abk%3D' + unit.state + '">'+ unit.file_ref + '</a>' +
+            '</div>'
+          );
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
   </script>
 </body>
 </html>
