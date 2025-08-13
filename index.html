@@ -55,7 +55,7 @@
 
             L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
             '<div style="min-width:240px; max-width:260px;">' +
-              '<b>' + unit.unit_type + '</b> for <b>' + unit.price + '</b> EUR <br>' +
+              '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
               '<img style="display:block; margin:8px auto; max-width:222px; width:222px; height:222px;" src="https://maps.googleapis.com/maps/api/staticmap?markers=size:tiny|' + unit.lat +',' + unit.lon + '&zoom=17&maptype=hybrid&size=222x222&key=AIzaSyDSdUjaimSFk_nlKvfr0puez_LXvj_VKxM"><br>' +
               '<b>' + unit.address + '</b><br>' +
               '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a><br>' +
