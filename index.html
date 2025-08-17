@@ -56,7 +56,15 @@
             L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
             '<div style="min-width:240px; max-width:260px;">' +
               '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
-              '<img style="display:block; margin:8px auto; max-width:222px; width:222px; height:222px;" src="https://maps.googleapis.com/maps/api/staticmap?markers=size:tiny|' + unit.lat +',' + unit.lon + '&zoom=17&maptype=hybrid&size=222x222&key=AIzaSyDSdUjaimSFk_nlKvfr0puez_LXvj_VKxM"><br>' +
+                '<div id="popup-map-' + i + '" style="width:333px; height:333px; margin:8px auto;"></div>' +
+                '<script>' +
+                'setTimeout(function(){' +
+                  'var popupMap = L.map("popup-map-' + i + '", {zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false, tap:false});' +
+                  'popupMap.setView([' + unit.lat + ',' + unit.lon + '], 17);' +
+                    'L.tileLayer("https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {maxZoom:19, minZoom:8}).addTo(popupMap);' +
+                  'L.marker([' + unit.lat + ',' + unit.lon + ']).addTo(popupMap);' +
+                '}, 10);' +
+                '</script>' +
               '<b>' + unit.address + '</b><br>' +
               '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a><br>' +
               '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.file_ref + '</a>'  +
