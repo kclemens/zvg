@@ -38,29 +38,52 @@
     var icon_water = L.divIcon({className: '', html: '<div style="font-size:24px; background:transparent; border:none; filter:brightness(1.8); text-shadow: 2px 2px 6px #000;">💧</div>', iconSize: [30, 30], iconAnchor: [15, 30]});
     var icon_star = L.divIcon({className: '', html: '<div style="font-size:24px; background:transparent; border:none; filter:brightness(1.8); text-shadow: 2px 2px 6px #000;">⭐</div>', iconSize: [30, 30], iconAnchor: [15, 30]});
 
+    // Parse hash for marker reference
+    function getHashUnitRef() {
+      if (window.location.hash) {
+        const m = decodeURIComponent(window.location.hash).match(/^#([a-z][a-z]):([0-9K/ ]+)$/);
+        if (m) {
+            return { state: m[1], file_ref: m[2] };
+        }
+      }
+      return null;
+    }
+
     fetch('https://kclemens.de/zvg/units.json.lists')
       .then(response => response.text())
       .then(text => {
+        const hashRef = getHashUnitRef();
         const lines = text.trim().split('\n');
+        let markerToOpen = null;
         lines.forEach((line, i) => {
           const unit = JSON.parse(line);
-
-            var icon = icon_default;
-            if (unit.near_water) {
-              icon = icon_water;
-              if (unit.price < 250000) {
-                icon = icon_star;
-              }
+          var icon = icon_default;
+          if (unit.near_water) {
+            icon = icon_water;
+            if (unit.price < 250000) {
+              icon = icon_star;
             }
-            L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
+          }
+
+          var marker = L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
             '<div>' +
-              '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
-              '<b>' + unit.address + '</b><br>' +
-              '<iframe width="260" height="260" src="https://api.maptiler.com/maps/satellite/?key=DMALw4rYtKyZ3zbPNxzX#15/' + unit.lat + '/' + unit.lon + '"></iframe><br>' +
-              '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a><br>' +
-              '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.file_ref + '</a>'  +
+            '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
+            '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '"><b>' + unit.address + '</b></a><br>' +
+            '<iframe width="260" height="260" src="https://api.maptiler.com/maps/satellite/?key=DMALw4rYtKyZ3zbPNxzX#15/' + unit.lat + '/' + unit.lon + '"></iframe><br>' +
+            '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.file_ref + '</a>'  +
             '</div>'
           );
+          marker.on('popupopen', function() {
+            window.location.hash = unit.state + ':' + unit.file_ref;
+          });
+          marker.on('popupclose', function() {
+            window.location.hash = '';
+          });
+
+          if (hashRef && unit.state === hashRef.state && unit.file_ref === hashRef.file_ref) {
+            marker.openPopup();
+            map.setView([unit.lat, unit.lon]);
+          }
         });
       })
       .catch(error => {
