@@ -52,11 +52,11 @@
                 icon = icon_star;
               }
             }
-
             L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
-            '<div style="min-width:240px; max-width:260px;">' +
+            '<div>' +
               '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
               '<b>' + unit.address + '</b><br>' +
+              '<iframe width="260" height="260" src="https://api.maptiler.com/maps/satellite/?key=DMALw4rYtKyZ3zbPNxzX#15/' + unit.lat + '/' + unit.lon + '"></iframe><br>' +
               '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '">route</a><br>' +
               '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.file_ref + '</a>'  +
             '</div>'
