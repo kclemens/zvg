@@ -66,15 +66,18 @@
           }
 
           var marker = L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
-            '<div>' +
-            '<b>' + unit.unit_type + ' ' + unit.price.toLocaleString() + ' € </b><br>' +
-            '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat +',' + unit.lon + '"><b>' + unit.address + '</b></a><br>' +
-            '<iframe width="260" height="260" src="https://api.maptiler.com/maps/satellite/?key=DMALw4rYtKyZ3zbPNxzX#15/' + unit.lat + '/' + unit.lon + '"></iframe><br>' +
-            '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.file_ref + '</a>'  +
+            '<div style="min-width:260px; min-height:300px;">' +
+            '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.unit_type + '</a><br>'  +
+            '<b>' + unit.price.toLocaleString() + ' €</b><br>' + 
+            unit.address + '<br>' +
+            '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat + ',' + unit.lon + '">' +
+              '<img width="250" height="250" src="https://image.maps.hereapi.com/mia/v3/base/mc/center:' + unit.lat + ',' + unit.lon + ';zoom=16/250x250/png8?apikey=DnPQRnittjfAKkgr7ES43E10KlM-gTmuNqzUelWXveg&style=explore.satellite.day&overlay=point:' + unit.lat + ',' + unit.lon + '"><br>' +
+            '</a><br>' +
             '</div>'
           );
           marker.on('popupopen', function() {
             window.location.hash = unit.state + ':' + unit.file_ref;
+            map.flyTo([unit.lat, unit.lon], map.getZoom());
           });
           marker.on('popupclose', function() {
             window.location.hash = '';
