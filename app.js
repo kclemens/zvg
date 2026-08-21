@@ -123,9 +123,15 @@
       +   fmtDate(auction.auction_date) + newBadge
       + '</div>'
       + desc
-      + (auction.url
-        ? '<a class="auction-link" href="' + escapeHtml(auction.url) + '" target="_blank" rel="noopener noreferrer">Auktion ansehen ↗</a>'
-        : '')
+      + (function() {
+          var linkUrl = auction.url;
+          if (linkUrl && linkUrl.indexOf('https://www.zvg-portal.de') === 0) {
+            linkUrl = 'https://prx.aclemens.de/' + linkUrl.slice('https://'.length);
+          }
+          return linkUrl
+            ? '<a class="auction-link" href="' + escapeHtml(linkUrl) + '" target="_blank" rel="noopener noreferrer">Auktion ansehen ↗</a>'
+            : '';
+        }())
       + '</div>';
   }
 
