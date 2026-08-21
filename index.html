@@ -1,97 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>ZVG-Map</title>
-  <link rel="icon" type="image/x-icon" href="/zvg/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hauction — Immobilienversteigerungen auf der Karte</title>
+
+  <!-- Leaflet 1.9.x -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-    #map {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
+
+  <!-- Leaflet.markercluster 1.5.x -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- ── Filter bar ────────────────────────────────────────────────────── -->
+  <div id="filter-bar">
+
+    <!-- Category checkboxes -->
+    <div class="filter-group">
+      <span class="filter-group-label">Kategorie:</span>
+      <label class="filter-check"><input type="checkbox" name="category" value="house"      checked /> <span class="legend-dot" style="background:#e74c3c;"></span> Haus</label>
+      <label class="filter-check"><input type="checkbox" name="category" value="apartment"  checked /> <span class="legend-dot" style="background:#3498db;"></span> Wohnung</label>
+      <label class="filter-check"><input type="checkbox" name="category" value="land"       checked /> <span class="legend-dot" style="background:#27ae60;"></span> Grundstück</label>
+      <label class="filter-check"><input type="checkbox" name="category" value="commercial" checked /> <span class="legend-dot" style="background:#f39c12;"></span> Gewerbe</label>
+      <label class="filter-check"><input type="checkbox" name="category" value="garage"     checked /> <span class="legend-dot" style="background:#9b59b6;"></span> Garage</label>
+      <label class="filter-check"><input type="checkbox" name="category" value="other"      checked /> <span class="legend-dot" style="background:#95a5a6;"></span> Sonstiges</label>
+    </div>
+
+    <!-- Numeric filters -->
+    <div class="filter-group filter-group-numbers">
+      <label class="filter-number-label">
+        Max. Preis
+        <input type="number" id="filter-max-price" placeholder="Max price" min="0" step="1000" />
+      </label>
+      <label class="filter-number-label">
+        Max. Wasserabstand (km)
+        <input type="number" id="filter-max-water" placeholder="Max water dist (km)" min="0" step="1" />
+      </label>
+      <label class="filter-number-label">
+        Max. Flughafen (km)
+        <input type="number" id="filter-max-airport" placeholder="Max airport dist (km)" min="0" step="1" />
+      </label>
+    </div>
+
+    <!-- Result counter -->
+    <div class="filter-group filter-group-count">
+      <span id="filter-count">Wird geladen…</span>
+    </div>
+
+  </div>
+
+  <!-- ── Map ───────────────────────────────────────────────────────────── -->
   <div id="map"></div>
-  <script>
-    var map = L.map('map').setView([52.494, 13.446], 10);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      minZoom: 8,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+  <!-- ── Status bar ────────────────────────────────────────────────────── -->
+  <div id="status"></div>
 
-    L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      minZoom: 8,
-      attribution: '&copy; <a href="https://www.openrailwaymap.org/">OpenRailwayMap</a> contributors'
-    }).addTo(map);
-
-    var icon_default = L.divIcon({className: '', html: '<div style="font-size:24px; background:transparent; border:none; filter:brightness(1.8); text-shadow: 2px 2px 6px #000;">🏠</div>', iconSize: [30, 30], iconAnchor: [15, 30]});
-    var icon_water = L.divIcon({className: '', html: '<div style="font-size:24px; background:transparent; border:none; filter:brightness(1.8); text-shadow: 2px 2px 6px #000;">💧</div>', iconSize: [30, 30], iconAnchor: [15, 30]});
-    var icon_star = L.divIcon({className: '', html: '<div style="font-size:24px; background:transparent; border:none; filter:brightness(1.8); text-shadow: 2px 2px 6px #000;">⭐</div>', iconSize: [30, 30], iconAnchor: [15, 30]});
-
-    // Parse hash for marker reference
-    function getHashUnitRef() {
-      if (window.location.hash) {
-        const m = decodeURIComponent(window.location.hash).match(/^#([a-z][a-z]):([0-9K/ ]+)$/);
-        if (m) {
-            return { state: m[1], file_ref: m[2] };
-        }
-      }
-      return null;
-    }
-
-    fetch('https://kclemens.de/zvg/units.json.lists')
-      .then(response => response.text())
-      .then(text => {
-        const hashRef = getHashUnitRef();
-        const lines = text.trim().split('\n');
-        let markerToOpen = null;
-        lines.forEach((line, i) => {
-          const unit = JSON.parse(line);
-          var icon = icon_default;
-          if (unit.near_water) {
-            icon = icon_water;
-            if (unit.price < 250000) {
-              icon = icon_star;
-            }
-          }
-
-          var marker = L.marker([unit.lat, unit.lon], {icon: icon}).addTo(map).bindPopup(
-            '<div style="min-width:260px; min-height:300px;">' +
-            '<a target="_blank" href="https://prx.kclemens.de/www.zvg-portal.de/index.php?button=showZvg&zvg_id=' + unit.unit_id + '&land_abk=' + unit.state + '">' + unit.unit_type + '</a><br>'  +
-            '<b>' + unit.price.toLocaleString() + ' €</b><br>' + 
-            unit.address + '<br>' +
-            '<a target="_blank" href="https://www.google.com/maps/dir/Hauptbahnhof+Berlin/' + unit.lat + ',' + unit.lon + '">' +
-              '<img width="250" height="250" src="https://image.maps.hereapi.com/mia/v3/base/mc/center:' + unit.lat + ',' + unit.lon + ';zoom=16/250x250/png8?apikey=DnPQRnittjfAKkgr7ES43E10KlM-gTmuNqzUelWXveg&style=explore.satellite.day&overlay=point:' + unit.lat + ',' + unit.lon + '"><br>' +
-            '</a><br>' +
-            '</div>'
-          );
-          marker.on('popupopen', function() {
-            window.location.hash = unit.state + ':' + unit.file_ref;
-            map.flyTo([unit.lat, unit.lon], map.getZoom());
-          });
-          marker.on('popupclose', function() {
-            window.location.hash = '';
-          });
-
-          if (hashRef && unit.state === hashRef.state && unit.file_ref === hashRef.file_ref) {
-            marker.openPopup();
-            map.setView([unit.lat, unit.lon]);
-          }
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  </script>
+  <script src="app.js" defer></script>
 </body>
 </html>
