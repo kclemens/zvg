@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-24T21:46:44.591291+00:00",
+  "generated_at": "2026-08-25T08:30:10.816766+00:00",
   "auctions": [
     {
       "id": "zvg:be-14339",
@@ -1112,21 +1112,6 @@
       "published_on": "2026-08-20"
     },
     {
-      "id": "zvg:ni-13046",
-      "source": "zvg",
-      "url": "https://www.zvg-portal.de/index.php?button=showZvg&zvg_id=13046&land_abk=ni",
-      "title": "in Niedersachsen — 0027 K 0013/2024",
-      "description": "Sonstiges, Ehemalige Resthofstelle",
-      "address": "Husberg  2, 49733 Haren, Altenberge",
-      "lat": 52.8143304,
-      "lon": 7.1694389,
-      "price": 487000.0,
-      "currency": "EUR",
-      "category": "other",
-      "auction_date": "2026-08-27",
-      "published_on": "2026-08-20"
-    },
-    {
       "id": "zvg:ni-13255",
       "source": "zvg",
       "url": "https://www.zvg-portal.de/index.php?button=showZvg&zvg_id=13255&land_abk=ni",
@@ -1438,21 +1423,6 @@
       "price": 220000.0,
       "currency": "EUR",
       "category": "apartment",
-      "auction_date": "2026-08-27",
-      "published_on": "2026-08-20"
-    },
-    {
-      "id": "zvg:rp-3926",
-      "source": "zvg",
-      "url": "https://www.zvg-portal.de/index.php?button=showZvg&zvg_id=3926&land_abk=rp",
-      "title": "in Rheinland-Pfalz — 0002 K 0001/2026",
-      "description": "Einfamilienhaus",
-      "address": "Kolpingstraße  35, 67722 Winnweiler",
-      "lat": 49.5659018,
-      "lon": 7.8383138,
-      "price": 237000.0,
-      "currency": "EUR",
-      "category": "house",
       "auction_date": "2026-08-27",
       "published_on": "2026-08-20"
     },
@@ -2415,6 +2385,21 @@
       "category": "apartment",
       "auction_date": "2026-09-08",
       "published_on": "2026-08-20"
+    },
+    {
+      "id": "zvg:bw-8622",
+      "source": "zvg",
+      "url": "https://www.zvg-portal.de/index.php?button=showZvg&zvg_id=8622&land_abk=bw",
+      "title": "in Baden-Wuerttemberg — 0001 K 0055/2025",
+      "description": "Einfamilienhaus",
+      "address": "Wiesenstr.  32, 00000 Ladenburg",
+      "lat": 49.4809546,
+      "lon": 8.5953907,
+      "price": 940000.0,
+      "currency": "EUR",
+      "category": "house",
+      "auction_date": "2026-09-22",
+      "published_on": "2026-08-25"
     },
     {
       "id": "boe:SUB-JA-2026-263660",
