@@ -116,7 +116,9 @@
       + '<div class="detail-row price">' + fmtPrice(auction.price, auction.currency) + '</div>'
       + '<div class="detail-row">'
       +   '<span class="detail-label">Adresse</span>'
-      +   escapeHtml(auction.address || '—')
+      +   (auction.address
+    ? '<a href="https://www.google.com/maps?q=' + auction.lat + ',' + auction.lon + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(auction.address) + '</a>'
+    : '—')
       + '</div>'
       + '<div class="detail-row">'
       +   '<span class="detail-label">Versteigerungstermin</span>'
